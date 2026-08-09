@@ -22,4 +22,4 @@ namespace gravitas::core
     TearDown // Changing the TearDown will not shutdown the application,
              // this is merely a marker state. Use EvtRequestShutdown.
   };
-}
+} // namespace gravitas::core
