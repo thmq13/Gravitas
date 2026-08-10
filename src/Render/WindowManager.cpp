@@ -1,6 +1,8 @@
 #include "Render/WindowManager.hpp"
 
 #include <cassert>
+#include <vector>
+#include <variant>
 
 #include <imgui.h>
 #include <rlImGui.h>
@@ -39,6 +41,24 @@ namespace gravitas::render
     GVT_INFO("WindowManager::~WindowManager freeing resources");
   }
 
+  core::PropertyNode WindowManager::GetTree() const {
+    std::vector<core::PropertyNode> children{};
+
+    children.push_back(core::PropertyNode::CreateLeafNode(
+      "RenderEngine/WindowManager/framesPerSecond",
+      "Target FPS",
+      core::AccessMode::ReadWrite,
+      core::RangeHint<std::uint32_t>{ .min = 30, .max = 1000 },
+      m_framesPerSecond
+    ));
+
+    return core::PropertyNode::CreateBranchNode(
+      "RenderEngine/WindowManager",
+      "Window Manager",
+      std::move(children)
+    );
+  }
+
   std::expected<void, WindowError> WindowManager::Initialize() {
     assert(!m_isInitialized && "WindowManager::Initialize called on an already initialized window manager");
     if (m_isInitialized) {
@@ -72,11 +92,7 @@ namespace gravitas::render
   }
 
   void WindowManager::BeginFrame() {
-    assert(m_isInitialized && "WindowManager::BeginFrame called before WindowManager::Initialize");
-    if (!m_isInitialized) {
-      GVT_ERROR("WindowManager::BeginFrame called before WindowManager::Initialize");
-      return;
-    }
+    GVT_ENSURE_INIT(m_isInitialized, "WindowManager");
 
     assert(!m_isFrameActive && "WindowManager::BeginFrame called while a frame is already active");
     if (m_isFrameActive) {
@@ -91,11 +107,7 @@ namespace gravitas::render
   }
 
   void WindowManager::EndFrame() {
-    assert(m_isInitialized && "WindowManager::EndFrame called before WindowManager::Initialize");
-    if (!m_isInitialized) {
-      GVT_ERROR("WindowManager::EndFrame called before WindowManager::Initialize");
-      return;
-    }  
+    GVT_ENSURE_INIT(m_isInitialized, "WindowManager");
 
     assert(m_isFrameActive && "WindowManager::EndFrame called without matching BeginFrame");
     if (!m_isFrameActive) {
@@ -109,11 +121,7 @@ namespace gravitas::render
   }
 
   void WindowManager::Begin3D() {
-    assert(m_isInitialized && "WindowManager::Begin3D called before WindowManager::Initialize");
-    if (!m_isInitialized) {
-      GVT_ERROR("WindowManager::Begin3D called before WindowManager::Initialize");
-      return;
-    }
+    GVT_ENSURE_INIT(m_isInitialized, "WindowManager");
 
     assert(m_isFrameActive && "WindowManager::Begin3D called outside of an active frame");
     if (!m_isFrameActive) {
@@ -126,11 +134,7 @@ namespace gravitas::render
   }
 
   void WindowManager::End3D() {
-    assert(m_isInitialized && "WindowManager::End3D called before WindowManager::Initialize");
-    if (!m_isInitialized) {
-      GVT_ERROR("WindowManager::End3D called before WindowManager::Initialize");
-      return;
-    }
+    GVT_ENSURE_INIT(m_isInitialized, "WindowManager");
 
     assert(m_isFrameActive && "WindowManager::End3D called outside of an active frame");
     if (!m_isFrameActive) {
@@ -148,10 +152,21 @@ namespace gravitas::render
     return ::WindowShouldClose();
   }
 
-  void WindowManager::UpdateCamera() {
-    if (!::IsWindowReady() || !m_isRlImGuiInitialized) {
+  void WindowManager::OnPropertyChange(const core::EvtPropertyChange& event) {
+    GVT_ENSURE_INIT(m_isInitialized, "WindowManager");
+
+    if (event.id == utils::HashPath("RenderEngine/WindowManager/framesPerSecond")) {
+      if (auto *fps{ std::get_if<std::uint32_t>(&event.newValue) }) {
+        m_framesPerSecond = *fps;
+        ::SetTargetFPS(static_cast<int>(m_framesPerSecond));
+        GVT_TRACE("WindowManager::OnPropertyChange changed Target FPS to {}", m_framesPerSecond);
+      }
       return;
     }
+  }
+
+  void WindowManager::UpdateCamera() {
+    GVT_ENSURE_INIT(m_isInitialized, "WindowManager");
 
     if (::IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
       m_isMovementLock = !m_isMovementLock;

@@ -5,11 +5,13 @@
 
 #include <raylib.h>
 
-#include <Core/Error.hpp>
+#include "Core/EventBus.hpp"
+#include "Core/Error.hpp"
+#include "Core/Reflectable.hpp"
 
 namespace gravitas::render
 {
-  class WindowManager {
+  class WindowManager : public core::Reflectable {
   public:
     WindowManager() noexcept;
     
@@ -20,14 +22,16 @@ namespace gravitas::render
     WindowManager(WindowManager&&) noexcept = delete;
     WindowManager& operator=(WindowManager&&) noexcept = delete;
 
-    [[nodiscard]] std::expected<void, WindowError> Initialize();
+    [[nodiscard]] core::PropertyNode GetTree() const override;
+    void OnPropertyChange(const core::EvtPropertyChange& event) override;
 
+    [[nodiscard]] std::expected<void, WindowError> Initialize();
     void BeginFrame();
     void EndFrame();
     void Begin3D();
     void End3D();
     [[nodiscard]] bool ShouldClose() const;
-    
+
   private:
     void UpdateCamera();
 
