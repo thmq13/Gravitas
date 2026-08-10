@@ -21,13 +21,13 @@ namespace gravitas::core
 
     [[nodiscard]] constexpr ImVec4 ToColor(LogLevel level) noexcept {
       switch (level) {
-        case LogLevel::Debug: return ImVec4(0.2f, 0.6f, 1.0f, 1.0f);
-        case LogLevel::Trace: return ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
-        case LogLevel::Info:  return ImVec4(0.2f, 0.8f, 0.2f, 1.0f);
-        case LogLevel::Warn:  return ImVec4(0.9f, 0.7f, 0.0f, 1.0f);
-        case LogLevel::Error: return ImVec4(0.9f, 0.2f, 0.2f, 1.0f);
-        case LogLevel::Fatal: return ImVec4(1.0f, 0.1f, 1.0f, 1.0f);
-        default:              return ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+        case LogLevel::Debug: return ImVec4{0.2f, 0.6f, 1.0f, 1.0f};
+        case LogLevel::Trace: return ImVec4{0.5f, 0.5f, 0.5f, 1.0f};
+        case LogLevel::Info:  return ImVec4{0.2f, 0.8f, 0.2f, 1.0f};
+        case LogLevel::Warn:  return ImVec4{0.9f, 0.7f, 0.0f, 1.0f};
+        case LogLevel::Error: return ImVec4{0.9f, 0.2f, 0.2f, 1.0f};
+        case LogLevel::Fatal: return ImVec4{1.0f, 0.1f, 1.0f, 1.0f};
+        default:              return ImVec4{1.0f, 1.0f, 1.0f, 1.0f};
       }
     }
 
@@ -38,7 +38,7 @@ namespace gravitas::core
       const float window_width{ viewport->Size.x * 0.35f };
       const float window_height{ viewport->Size.y * 0.35f };
 
-      ImGui::SetNextWindowSize(ImVec2(window_width, window_height), ImGuiCond_FirstUseEver);
+      ImGui::SetNextWindowSize(ImVec2{window_width, window_height}, ImGuiCond_FirstUseEver);
 
       return ImGui::Begin("Logger", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoNavFocus);
     }
@@ -96,7 +96,7 @@ namespace gravitas::core
     ImGui::Separator();
 
     const float footer_height{ ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing() };
-    if (ImGui::BeginChild("Log Console Scrolling Region", ImVec2(0, -footer_height), false, ImGuiWindowFlags_HorizontalScrollbar)) {
+    if (ImGui::BeginChild("Log Console Scrolling Region", ImVec2{0, -footer_height}, false, ImGuiWindowFlags_HorizontalScrollbar)) {
       if (copy_to_clipboard) {
         ImGui::LogToClipboard();
       }

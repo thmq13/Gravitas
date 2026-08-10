@@ -32,6 +32,6 @@ namespace gravitas::ui
 
     using PanelVector = std::vector<std::unique_ptr<UIPanel>>;
     using PanelMap    = std::unordered_map<core::AppState, PanelVector>;
-    PanelMap m_panelTable{};
+    PanelMap m_panels{};
   };
 } // namespace gravitas::ui 

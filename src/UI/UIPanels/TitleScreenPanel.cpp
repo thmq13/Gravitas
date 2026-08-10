@@ -20,11 +20,11 @@ namespace gravitas::ui
       return;
     }
 
-    ImVec2 window_size{ ImGui::GetWindowSize() };
+    const ImVec2 window_size{ ImGui::GetWindowSize() };
     
     ImGui::SetWindowFontScale(4.0f);
-    ImVec2 text_size{ ImGui::CalcTextSize(kTitleText) };
-    ImGui::SetCursorPos(ImVec2((window_size.x - text_size.x) * 0.5f, window_size.y * 0.30f));
+    const ImVec2 text_size{ ImGui::CalcTextSize(kTitleText) };
+    ImGui::SetCursorPos(ImVec2{(window_size.x - text_size.x) * 0.5f, window_size.y * 0.30f});
     ImGui::TextUnformatted(kTitleText);
     ImGui::SetWindowFontScale(1.0f);
 
@@ -38,13 +38,13 @@ namespace gravitas::ui
 
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 8.0f);
 
-    ImGui::SetCursorPos(ImVec2(buttonPosX, start_button_pos_Y));
-    if (ImGui::Button("START", button_size)) {
+    ImGui::SetCursorPos(ImVec2{buttonPosX, start_button_pos_Y});
+    if (ImGui::Button(kStartText, button_size)) {
       bus.Publish(core::EvtRequestStateChange{core::AppState::ModeSelection});
     }
     
-    ImGui::SetCursorPos(ImVec2(buttonPosX, exit_button_pos_Y));
-    if (ImGui::Button("EXIT", button_size)) {
+    ImGui::SetCursorPos(ImVec2{buttonPosX, exit_button_pos_Y});
+    if (ImGui::Button(kExitText, button_size)) {
       bus.Publish(core::EvtRequestShutdown{});
     }
 
