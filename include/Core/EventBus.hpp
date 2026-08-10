@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cstdint>
 #include <concepts>
 #include <functional>
 #include <variant>
@@ -9,9 +10,11 @@
 #include <typeinfo>
 #include <mutex>
 #include <utility>
+#include <string_view>
 
 #include "Core/AppState.hpp"
 #include "Core/Logging.hpp"
+#include "Core/Reflectable.hpp"
 
 namespace gravitas::core
 {
@@ -22,7 +25,13 @@ namespace gravitas::core
     AppState requestedState;
   };
 
-  using Event = std::variant<EvtRequestShutdown, EvtRequestStateChange>;
+  struct EvtPropertyChange {
+    std::uint32_t id{};
+    std::string_view path{};
+    NodePayload newValue{};
+  };
+
+  using Event = std::variant<EvtRequestShutdown, EvtRequestStateChange, EvtPropertyChange>;
 
   class EventBus {
   public:
