@@ -43,7 +43,7 @@ __1. Clone the repository__
 ```
 Bash
 git clone https://github.com/thmq13/Gravitas.git
-cd N-Body-Sandbox
+cd Gravitas
 ```
 __2. Configure the project__
 
@@ -64,10 +64,10 @@ __4. Run the application__
 ```
 Bash
 # Windows
-.\build\Release\N-Body-Sandbox.exe
+.\build\bin\Release\Gravitas.exe
 
 # Linux / macOS
-./build/N-Body-Sandbox
+./build/bin/Gravitas
 ```
 
 ## Controls and Usage ##
