@@ -31,6 +31,18 @@ namespace gravitas::render
     GVT_INFO("RenderEngine::~RenderEngine freeing resources");
   }
 
+  core::PropertyNode RenderEngine::GetTree() const {
+    std::vector<core::PropertyNode> children{};
+
+    children.push_back(m_windowManager.GetTree());
+
+    return core::PropertyNode::CreateBranchNode(
+      "RenderEngine",
+      "Render Engine",
+      std::move(children)
+    );
+  }
+
   std::expected<void, render::RenderEngineError> RenderEngine::Initialize() {
     assert(!m_isInitialized && "RenderEngine::Initialize called on an already initialized render engine");
     if (m_isInitialized) {
@@ -54,16 +66,14 @@ namespace gravitas::render
   } 
 
   void RenderEngine::HandleEvent(const core::Event& event) {
-    assert(m_isInitialized && "RenderEngine::HandleEvent called before RenderEngine::::Initialize");
-    if (!m_isInitialized) {
-      GVT_ERROR("RenderEngine::HandleEvent called before RenderEngine::::Initialize");
-      return;
-    }
+    GVT_ENSURE_INIT(m_isInitialized, "RenderEngine");
     
     std::visit([this](const auto& evt) {
       using EventType = std::decay_t<decltype(evt)>;
 
-      //if constexpr (std::same_as<EventType, )
+      if constexpr (std::same_as<EventType, core::EvtPropertyChange>) {
+        OnPropertyChange(evt);
+      }
     }, event);
   }
 
@@ -76,11 +86,8 @@ namespace gravitas::render
   }
 
   void RenderEngine::Render(core::AppState state) {
-    assert(m_isInitialized && "RenderEngine::Render called before Render::Initialize");
-    if (!m_isInitialized) {
-      GVT_ERROR("RenderEngine::Render called before RenderEngine::Initialize");
-      return;
-    }
+    GVT_ENSURE_INIT(m_isInitialized, "RenderEngine");
+
     if (!ShouldDraw3D(state)) {
       return;
     }
@@ -94,5 +101,14 @@ namespace gravitas::render
       return false;
     }
     return m_windowManager.ShouldClose();
+  }
+
+  void RenderEngine::OnPropertyChange(const core::EvtPropertyChange& event) {
+    GVT_ENSURE_INIT(m_isInitialized, "RenderEngine");
+
+    if (event.path.starts_with("RenderEngine/WindowManager/")) {
+      m_windowManager.OnPropertyChange(event);
+      return;
+    }
   }
 } // namespace gravitas::render

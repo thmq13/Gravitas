@@ -6,13 +6,14 @@
 #include "Core/EventBus.hpp"
 #include "Core/Error.hpp"
 #include "Core/AppState.hpp"
+#include "Core/Reflectable.hpp"
 #include "Render/WindowManager.hpp"
 
 namespace gravitas::particle { class ParticleBuffer; }
 
 namespace gravitas::render
 {
-  class RenderEngine : public core::EventBusSubscriber<RenderEngine> {
+  class RenderEngine : public core::EventBusSubscriber<RenderEngine>, public core::Reflectable {
   public:
     explicit RenderEngine(core::EventBus& bus, std::shared_ptr<particle::ParticleBuffer> sharedBuffer) noexcept;
 
@@ -23,6 +24,8 @@ namespace gravitas::render
     RenderEngine(RenderEngine&&) noexcept = delete;
     RenderEngine& operator=(RenderEngine&&) noexcept = delete;
 
+    [[nodiscard]] core::PropertyNode GetTree() const override;
+
     [[nodiscard]] std::expected<void, RenderEngineError> Initialize(); 
 
     void HandleEvent(const core::Event& event);
@@ -32,6 +35,8 @@ namespace gravitas::render
     [[nodiscard]] bool ShouldClose() const;
 
   private:
+    void OnPropertyChange(const core::EvtPropertyChange& event) override;
+
     bool m_isInitialized{ false };
     WindowManager m_windowManager{};
     core::EventBus& m_bus;
