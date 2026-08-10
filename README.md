@@ -14,12 +14,11 @@ __Build System__: CMake (3.20+)
 
 ## Project Structure ##
 ```
-N-Body Sandbox/
-├── CMakeLists.txt     # Main CMake build script
+Gravitas/
 ├── include/           # Header files
-│   ├── Core/          # Application lifecycle and message system
+│   ├── Core/          # Application and core systems
 │   ├── Generator/     # Particle generators
-│   ├── Helpers/       # Math and utilities
+│   ├── Utils/         # Math and utilities
 │   ├── Particle/      # Particle data model
 │   ├── Physics/       # Physics logic
 │   ├── Render/        # Render pipeline
