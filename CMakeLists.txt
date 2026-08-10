@@ -31,19 +31,18 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/raysan5/raylib.git
   GIT_TAG        6.0
 )
-
-FetchContent_Declare(
-  rlimgui
-  GIT_REPOSITORY https://github.com/raylib-extras/rlImGui.git
-  GIT_TAG        Raylib_6_0
-)
-
-FetchContent_MakeAvailable(raylib rlimgui)
+FetchContent_MakeAvailable(raylib)
 
 FetchContent_Populate(
   imgui
   GIT_REPOSITORY https://github.com/ocornut/imgui.git
   GIT_TAG        v1.92.9b
+)
+
+FetchContent_Populate(
+  rlimgui
+  GIT_REPOSITORY https://github.com/raylib-extras/rlImGui.git
+  GIT_TAG        Raylib_6_0
 )
 
 file(GLOB THIRD_PARTY_SOURCES
@@ -117,4 +116,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   ${rlimgui_SOURCE_DIR}
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib third_party)
+target_link_libraries(${PROJECT_NAME} PRIVATE third_party)
