@@ -3,6 +3,8 @@
 #include "Core/Logging.hpp"
 #include "UI/UIPanel.hpp"
 #include "UI/UIPanels/TitleScreenPanel.hpp"
+#include "UI/UIPanels/ModeSelectionPanel.hpp"
+#include "UI/UIPanels/BackButtonPanel.hpp"
 
 namespace gravitas::ui 
 {
@@ -16,7 +18,7 @@ namespace gravitas::ui
   }
 
   void UIManager::Draw(core::AppState state) {
-    if (auto it{ m_panelTable.find(state) }; it != m_panelTable.end()) {
+    if (auto it{ m_panels.find(state) }; it != m_panels.end()) {
       for (const auto& panel : it->second) {
         if (!panel) {
           return;
@@ -32,6 +34,8 @@ namespace gravitas::ui
   }
 
   void UIManager::RegisterPanels() {
-    m_panelTable[core::AppState::TitleScreen].push_back(std::make_unique<TitleScreenPanel>());
+    m_panels[core::AppState::TitleScreen].push_back(std::make_unique<TitleScreenPanel>());
+    m_panels[core::AppState::ModeSelection].push_back(std::make_unique<ModeSelectionPanel>());
+    m_panels[core::AppState::ModeSelection].push_back(std::make_unique<BackButtonPanel>(core::AppState::TitleScreen));
   }
 } // namespace gravitas::ui 
