@@ -65,11 +65,7 @@ namespace gravitas::core
   }
 
   void App::HandleEvent(const Event& event) {
-    assert(m_isInitialized && "App::HandleEvent called before App::Initialize");
-    if (!m_isInitialized) {
-      GVT_ERROR("App::HandleEvent called before App::Initialize");
-      return;
-    }
+    GVT_ENSURE_INIT(m_isInitialized, "App");
 
     std::visit([this](const auto& evt) {
       using EventType = std::decay_t<decltype(evt)>;
