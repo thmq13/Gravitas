@@ -20,8 +20,10 @@ namespace gravitas::core
     return std::get<std::vector<PropertyNode>>(payload);
   }
 
-  PropertyNode PropertyNode::CreateBranchNode(std::string name, std::vector<PropertyNode> children) {
+  PropertyNode PropertyNode::CreateBranchNode(std::string path, std::string name, std::vector<PropertyNode> children) {
     return PropertyNode{
+      .id      = utils::HashPath(path),
+      .path    = std::move(path),
       .name    = std::move(name),
       .access  = AccessMode::ReadWrite,
       .hint    = DefaultHint{},
