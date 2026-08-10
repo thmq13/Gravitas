@@ -9,6 +9,8 @@
 #include <numeric>
 #include <utility>
 
+#include "Utils/Math.hpp"
+
 namespace gravitas::core
 {
   // ==============================================================================
@@ -30,7 +32,6 @@ namespace gravitas::core
   struct SelectorHint {
     std::vector<std::string> options{};
     std::string selectedOption{};
-    std::function<void(const std::string& )> onSelect{};
   };
 
   using PropertyHint = std::variant<
@@ -52,17 +53,17 @@ namespace gravitas::core
   struct PropertyNode;
   using NodePayload = std::variant<
     std::monostate,
-    int*, 
-    std::size_t*, 
-    std::uint8_t*, 
-    std::uint16_t*,
-    std::uint32_t*,
-    std::uint64_t*,
-    float*,
-    double*,
-    bool*,
-    char*, 
-    std::string*,
+    int, 
+    std::size_t, 
+    std::uint8_t, 
+    std::uint16_t,
+    std::uint32_t,
+    std::uint64_t,
+    float,
+    double,
+    bool,
+    char, 
+    std::string,
     std::vector<PropertyNode>
   >;
 
@@ -70,6 +71,8 @@ namespace gravitas::core
   // Node
   // ==============================================================================
   struct PropertyNode {
+    std::uint32_t id{};
+    std::string path{};
     std::string name{};
     AccessMode access{ AccessMode::ReadWrite };
     PropertyHint hint{ DefaultHint{} };
@@ -78,15 +81,27 @@ namespace gravitas::core
     [[nodiscard]] bool IsBranch() const noexcept;
     [[nodiscard]] const std::vector<PropertyNode>& GetChildren() const;
 
-    [[nodiscard]] static PropertyNode CreateBranchNode(std::string name, std::vector<PropertyNode> children);
+    [[nodiscard]] static PropertyNode CreateBranchNode(
+      std::string path,
+      std::string name, 
+      std::vector<PropertyNode> children
+    );
 
     template <typename ValueType>
-    [[nodiscard]] static PropertyNode CreateLeafNode(std::string name, AccessMode access, PropertyHint hint, ValueType* valuePtr) {
+    [[nodiscard]] static PropertyNode CreateLeafNode(
+      std::string path,
+      std::string name, 
+      AccessMode access,
+      PropertyHint hint,
+      ValueType value
+    ) {
       return PropertyNode{
+        .id      = utils::HashPath(path),
+        .path    = std::move(path),
         .name    = std::move(name),
         .access  = access,
         .hint    = std::move(hint),
-        .payload = valuePtr
+        .payload = std::move(value)
       };
     }
   };
@@ -94,9 +109,12 @@ namespace gravitas::core
   // ==============================================================================
   // Reflectable
   // ==============================================================================
+  struct EvtPropertyChange;
+
   class Reflectable {
   public:
     virtual ~Reflectable() = default;
-    virtual PropertyNode GetTree() = 0;
+    [[nodiscard]] virtual PropertyNode GetTree() const = 0;
+    virtual void OnPropertyChange(const EvtPropertyChange& event) = 0;
   };
 } // namespace gravitas::core
