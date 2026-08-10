@@ -1,6 +1,18 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
+
+#include "Core/Logging.hpp"
+
+#define GVT_ENSURE_INIT(isInitialized, className) \
+  do { \
+    assert((isInitialized) && className " called before initialization"); \
+    if (!(isInitialized)) { \
+      GVT_ERROR("{}::{} called before initialization", className, __func__); \
+      return; \
+    } \
+  } while (0)
 
 namespace gravitas::core
 {
