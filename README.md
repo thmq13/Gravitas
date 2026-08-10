@@ -67,7 +67,7 @@ Bash
 .\build\bin\Release\Gravitas.exe
 
 # Linux / macOS
-./build/bin/Gravitas
+./build/bin/Release/Gravitas
 ```
 
 ## Controls and Usage ##
