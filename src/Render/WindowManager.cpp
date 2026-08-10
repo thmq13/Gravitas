@@ -28,13 +28,13 @@ namespace gravitas::render
 
   WindowManager::~WindowManager() {
     if (m_isRlImGuiInitialized) {
-      if (IsWindowReady()) {
+      if (::IsWindowReady()) {
         rlImGuiShutdown();
       }
       m_isRlImGuiInitialized = false;
     }
-    if (IsWindowReady()) {
-      CloseWindow();
+    if (::IsWindowReady()) {
+      ::CloseWindow();
     }
     GVT_INFO("WindowManager::~WindowManager freeing resources");
   }
@@ -45,21 +45,21 @@ namespace gravitas::render
       return std::unexpected(WindowError::AlreadyInitialized);
     }
 
-    SetTraceLogLevel(LOG_NONE);
-    InitWindow(1280, 720, "Gravitas");
-    if (!IsWindowReady()) {
+    ::SetTraceLogLevel(LOG_NONE);
+    ::InitWindow(1280, 720, "Gravitas");
+    if (!::IsWindowReady()) {
       return std::unexpected(WindowError::WindowCreationFailed);
     }
 
-    int monitor_width{ GetMonitorWidth(0) };
-    int monitor_height{ GetMonitorHeight(0) };
+    int monitor_width{ ::GetMonitorWidth(0) };
+    int monitor_height{ ::GetMonitorHeight(0) };
 
     int padding_width{ monitor_width / 4 };
     int padding_height{ monitor_height / 4 };
 
-    SetWindowSize(monitor_width - padding_width, monitor_height - padding_height);
-    SetWindowPosition(padding_width / 2, padding_height / 2);
-    SetTargetFPS(static_cast<int>(m_framesPerSecond));
+    ::SetWindowSize(monitor_width - padding_width, monitor_height - padding_height);
+    ::SetWindowPosition(padding_width / 2, padding_height / 2);
+    ::SetTargetFPS(static_cast<int>(m_framesPerSecond));
 
     rlImGuiSetup(true);
     m_isRlImGuiInitialized = true;
@@ -84,8 +84,8 @@ namespace gravitas::render
       return;
     }
 
-    BeginDrawing();
-    ClearBackground(BLACK);
+    ::BeginDrawing();
+    ::ClearBackground(BLACK);
     rlImGuiBegin();
     m_isFrameActive = true;
   }
@@ -104,7 +104,7 @@ namespace gravitas::render
     }
 
     rlImGuiEnd();
-    EndDrawing();
+    ::EndDrawing();
     m_isFrameActive = false;
   }
 
@@ -122,7 +122,7 @@ namespace gravitas::render
     }
 
     UpdateCamera();
-    BeginMode3D(m_camera);
+    ::BeginMode3D(m_camera);
   }
 
   void WindowManager::End3D() {
@@ -138,18 +138,18 @@ namespace gravitas::render
       return;
     }
 
-    EndMode3D();
+    ::EndMode3D();
   }
 
   bool WindowManager::ShouldClose() const {
-    if (!IsWindowReady()) {
+    if (!::IsWindowReady()) {
       return false;
     }
-    return WindowShouldClose();
+    return ::WindowShouldClose();
   }
 
   void WindowManager::UpdateCamera() {
-    if (!IsWindowReady() || !m_isRlImGuiInitialized) {
+    if (!::IsWindowReady() || !m_isRlImGuiInitialized) {
       return;
     }
 
