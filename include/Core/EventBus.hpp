@@ -52,9 +52,9 @@ namespace gravitas::core
     void Dispatch();
 
   private:
-    std::queue<Event>                                               m_queue{};
+    std::queue<Event> m_queue{};
     std::unordered_map<std::type_index, std::vector<EventCallback>> m_callbacks{};
-    mutable std::mutex                                              m_mutex{};
+    mutable std::mutex m_mutex{};
   };
 
   template <typename Derived>

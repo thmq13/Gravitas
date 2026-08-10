@@ -29,14 +29,12 @@ namespace gravitas::render
     void BeginFrame();
     void EndFrame();
     void Render(core::AppState state);
-    bool ShouldClose() const;
+    [[nodiscard]] bool ShouldClose() const;
 
   private:
-    [[nodiscard]] bool ShouldDraw3D(core::AppState state) const noexcept;
-
-    bool                                      m_isInitialized{ false };
-    WindowManager                             m_windowManager{};
-    core::EventBus&                           m_bus;
+    bool m_isInitialized{ false };
+    WindowManager m_windowManager{};
+    core::EventBus& m_bus;
     std::shared_ptr<particle::ParticleBuffer> m_particleBuffer{};
   };
 } // namespace gravitas::render

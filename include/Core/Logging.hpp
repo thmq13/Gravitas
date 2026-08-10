@@ -43,7 +43,7 @@ namespace gravitas::core
   public:
     static constexpr std::size_t s_maxMessageCount{ 1000 };
 
-    static Logger& GetInstance();
+    [[nodiscard]] static Logger& GetInstance();
 
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;
@@ -58,14 +58,12 @@ namespace gravitas::core
     Logger();
     ~Logger() = default;
 
-    bool BeginWindow();
-    void EndWindow();
     void OpenLogFile();
 
     std::deque<LogMessage> m_messages{};
-    std::ofstream          m_logFile{};
-    bool                   m_autoScroll{ true };
-    mutable std::mutex     m_mutex{};
+    std::ofstream m_logFile{};
+    bool m_autoScroll{ true };
+    mutable std::mutex m_mutex{};
   };
 
   template <typename... Args>

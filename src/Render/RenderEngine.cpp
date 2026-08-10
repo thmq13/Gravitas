@@ -11,6 +11,18 @@
 
 namespace gravitas::render
 {
+  namespace
+  {
+    [[nodiscard]] constexpr bool ShouldDraw3D(core::AppState state) noexcept {
+      return state == core::AppState::PrecomputeConfig  ||
+             state == core::AppState::PrecomputeRunning ||
+             state == core::AppState::RealTimeConfig    ||
+             state == core::AppState::RealTimeRunning   ||
+             state == core::AppState::PlaybackConfig    ||
+             state == core::AppState::PlaybackRunning;
+    }
+  } // namespace
+
   RenderEngine::RenderEngine(core::EventBus& bus, std::shared_ptr<particle::ParticleBuffer> sharedBuffer) noexcept
     : m_bus(bus) 
     , m_particleBuffer(std::move(sharedBuffer)) {}
@@ -73,7 +85,7 @@ namespace gravitas::render
       return;
     }
     m_windowManager.Begin3D();
-    DrawGrid(20, 1.0f);
+    ::DrawGrid(20, 1.0f);
     m_windowManager.End3D();
   }
 
@@ -82,14 +94,5 @@ namespace gravitas::render
       return false;
     }
     return m_windowManager.ShouldClose();
-  }
-
-  bool RenderEngine::ShouldDraw3D(core::AppState state) const noexcept {
-    return state == core::AppState::PrecomputeConfig  ||
-           state == core::AppState::PrecomputeRunning ||
-           state == core::AppState::RealTimeConfig    ||
-           state == core::AppState::RealTimeRunning   ||
-           state == core::AppState::PlaybackConfig    ||
-           state == core::AppState::PlaybackRunning;
   }
 } // namespace gravitas::render

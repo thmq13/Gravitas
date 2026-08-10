@@ -16,7 +16,7 @@ namespace gravitas::ui
     void Draw(core::EventBus& bus) override;
 
   private:
-    bool BeginWindow();
-    void EndWindow();
+    [[nodiscard]] bool BeginWindow() override;
+    void EndWindow() override;
   };
 } // namespace gravitas::ui

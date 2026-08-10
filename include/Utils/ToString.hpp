@@ -8,7 +8,7 @@
 
 namespace gravitas::utils 
 {
-  constexpr std::string_view ToString(core::AppState state) noexcept {
+  [[nodiscard]] constexpr std::string_view ToString(core::AppState state) noexcept {
     switch (state) {
       case core::AppState::Uninitialized:     return "Uninitialized";
       case core::AppState::TitleScreen:       return "TitleScreen";
@@ -24,7 +24,7 @@ namespace gravitas::utils
     }
   }
 
-  constexpr std::string_view ToString(core::AppError error) noexcept {
+  [[nodiscard]] constexpr std::string_view ToString(core::AppError error) noexcept {
     switch (error) {
       case core::AppError::NotInitialized:     return "App Not Initialized";
       case core::AppError::AlreadyInitialized: return "App Already Initialized";
@@ -33,7 +33,7 @@ namespace gravitas::utils
     }
   }
 
-  constexpr std::string_view ToString(render::RenderEngineError error) noexcept {
+  [[nodiscard]] constexpr std::string_view ToString(render::RenderEngineError error) noexcept {
     switch (error) {
       case render::RenderEngineError::NotInitialized:         return "Render Engine Not Initialized";
       case render::RenderEngineError::AlreadyInitialized:     return "Render Engine Already Initialized";
@@ -43,7 +43,7 @@ namespace gravitas::utils
     }
   }
 
-  constexpr std::string_view ToString(render::WindowError error) noexcept {
+  [[nodiscard]] constexpr std::string_view ToString(render::WindowError error) noexcept {
     switch (error) {
       case render::WindowError::NotInitialized:       return "Window Not Initialized";
       case render::WindowError::AlreadyInitialized:   return "Window Already Initialized";

@@ -7,4 +7,3 @@ namespace gravitas::entry
     return core::App();
   }
 } // namespace gravitas::entry
-

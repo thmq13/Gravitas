@@ -28,9 +28,10 @@ namespace gravitas::ui
   private:
     void RegisterPanels();
 
-    using UIPanels = std::vector<std::unique_ptr<UIPanel>>;
+    core::EventBus& m_bus;
 
-    core::EventBus&                             m_bus;
-    std::unordered_map<core::AppState, UIPanels> m_panelTable{};
+    using PanelVector = std::vector<std::unique_ptr<UIPanel>>;
+    using PanelMap    = std::unordered_map<core::AppState, PanelVector>;
+    PanelMap m_panelTable{};
   };
 } // namespace gravitas::ui 

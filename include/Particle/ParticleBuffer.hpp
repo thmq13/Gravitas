@@ -24,10 +24,10 @@ namespace gravitas::particle
     [[nodiscard]] const ParticleSystem& GetFrontBuffer() const noexcept;
 
   private:
-    ParticleSystem     m_frontBuffer{};
-    ParticleSystem     m_backBuffer{};
-    ParticleSystem     m_sharedBuffer{};
-    std::atomic<bool>  m_isNewFrameReady{ false };
+    ParticleSystem m_frontBuffer{};
+    ParticleSystem m_backBuffer{};
+    ParticleSystem m_sharedBuffer{};
+    std::atomic<bool> m_isNewFrameReady{ false };
     mutable std::mutex m_mutex{};
   };
 } // namespace gravitas::particle

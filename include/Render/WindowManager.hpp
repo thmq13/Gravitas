@@ -26,16 +26,18 @@ namespace gravitas::render
     void EndFrame();
     void Begin3D();
     void End3D();
-    bool ShouldClose() const;
+    [[nodiscard]] bool ShouldClose() const;
     
   private:
     void UpdateCamera();
 
-    bool          m_isInitialized{ false };
-    bool          m_isFrameActive{ false };
-    bool          m_isRlImGuiInitialized{ false };
+    bool m_isInitialized{ false };
+    bool m_isFrameActive{ false };
+    bool m_isRlImGuiInitialized{ false };
+
     std::uint32_t m_framesPerSecond{ 60 };
-    bool          m_isMovementLock{ true };
-    Camera3D      m_camera{};
+    bool m_isMovementLock{ true };
+
+    Camera3D m_camera{};
   };
 } // namespace gravitas::render

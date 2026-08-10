@@ -153,35 +153,35 @@ namespace gravitas::render
       return;
     }
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+    if (::IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
       m_isMovementLock = !m_isMovementLock;
       if (m_isMovementLock) {
-        EnableCursor();
+        ::EnableCursor();
         ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
       } else {
-        DisableCursor();
+        ::DisableCursor();
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
       }
     }
 
     if (!m_isMovementLock) {
-      float   delta_time{ GetFrameTime() };
+      float   delta_time{ ::GetFrameTime() };
 
-      float   current_movement_speed{ IsKeyDown(KEY_LEFT_CONTROL) ? kFasterMovementSpeed : kMovementSpeed };
+      float   current_movement_speed{ ::IsKeyDown(KEY_LEFT_CONTROL) ? kFasterMovementSpeed : kMovementSpeed };
       float   movement_displacement{  current_movement_speed * delta_time };
       Vector3 movement{};
-      if (IsKeyDown(KEY_W))          { movement.x += movement_displacement; }
-      if (IsKeyDown(KEY_S))          { movement.x -= movement_displacement; }
-      if (IsKeyDown(KEY_D))          { movement.y += movement_displacement; }
-      if (IsKeyDown(KEY_A))          { movement.y -= movement_displacement; }
-      if (IsKeyDown(KEY_SPACE))      { movement.z += movement_displacement; }
-      if (IsKeyDown(KEY_LEFT_SHIFT)) { movement.z -= movement_displacement; }
+      if (::IsKeyDown(KEY_W))          { movement.x += movement_displacement; }
+      if (::IsKeyDown(KEY_S))          { movement.x -= movement_displacement; }
+      if (::IsKeyDown(KEY_D))          { movement.y += movement_displacement; }
+      if (::IsKeyDown(KEY_A))          { movement.y -= movement_displacement; }
+      if (::IsKeyDown(KEY_SPACE))      { movement.z += movement_displacement; }
+      if (::IsKeyDown(KEY_LEFT_SHIFT)) { movement.z -= movement_displacement; }
 
-      Vector2 mouse_delta{ GetMouseDelta() };
+      Vector2 mouse_delta{ ::GetMouseDelta() };
       float   pan_displacement{ kPanSpeed * delta_time };
       Vector3 rotation{ mouse_delta.x * pan_displacement, mouse_delta.y * pan_displacement };
       
-      UpdateCameraPro(&m_camera, movement, rotation, 0.0f);
+      ::UpdateCameraPro(&m_camera, movement, rotation, 0.0f);
     }
   }
 } // namespace gravitas::render

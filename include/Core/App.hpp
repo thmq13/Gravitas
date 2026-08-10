@@ -33,12 +33,14 @@ namespace gravitas::core
   private:
     void ChangeState(AppState newState) noexcept;
 
-    bool                                      m_isInitialized{ false };
-    bool                                      m_isRunning{ false };
-    AppState                                  m_state{ AppState::Uninitialized };
-    EventBus                                  m_bus{};
+    bool m_isInitialized{ false };
+    bool m_isRunning{ false };
+    AppState m_state{ AppState::Uninitialized };
+    
+    EventBus m_bus{};
+
     std::shared_ptr<particle::ParticleBuffer> m_particleBuffer{};
-    ui::UIManager                             m_uiManager{ m_bus };
-    render::RenderEngine                      m_renderEngine;
+    ui::UIManager m_uiManager{ m_bus };
+    render::RenderEngine m_renderEngine;
   };
 } // namespace gravitas::core

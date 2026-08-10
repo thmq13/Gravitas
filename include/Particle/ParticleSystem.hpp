@@ -22,17 +22,17 @@ namespace gravitas::particle
     std::vector<float>  radius{};
     std::vector<Color>  color{};
 
-    [[nodiscard]] std::size_t GetSize() const noexcept {
+    [[nodiscard]] constexpr std::size_t GetSize() const noexcept {
       assert(mass.size() == positionX.size() && mass.size() == velocityY.size()
         && "ParticleSystem::GetSize found size mismatch between containers");
       return mass.size();
     }
 
-    void AddSize(std::size_t additionalSize) {
+    constexpr void AddSize(std::size_t additionalSize) {
       Resize(GetSize() + additionalSize);
     }
 
-    void Resize(std::size_t newSize) {
+    constexpr void Resize(std::size_t newSize) {
       mass.resize(newSize);
       positionX.resize(newSize);
       positionY.resize(newSize);
@@ -47,7 +47,7 @@ namespace gravitas::particle
       color.resize(newSize);
     }
 
-    void Reserve(std::size_t capacity) {
+    constexpr void Reserve(std::size_t capacity) {
       mass.reserve(capacity);
       positionX.reserve(capacity);
       positionY.reserve(capacity);

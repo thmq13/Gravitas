@@ -7,7 +7,7 @@ namespace gravitas::core
 {
   namespace
   {
-    constexpr std::string_view ToString(LogLevel level) noexcept {
+    [[nodiscard]] constexpr std::string_view ToString(LogLevel level) noexcept {
       switch (level) {
         case LogLevel::Debug: return "[DEBUG] ";
         case LogLevel::Trace: return "[TRACE] ";
@@ -19,7 +19,7 @@ namespace gravitas::core
       }
     }
 
-    constexpr ImVec4 ToColor(LogLevel level) noexcept {
+    [[nodiscard]] constexpr ImVec4 ToColor(LogLevel level) noexcept {
       switch (level) {
         case LogLevel::Debug: return ImVec4(0.2f, 0.6f, 1.0f, 1.0f);
         case LogLevel::Trace: return ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -32,6 +32,21 @@ namespace gravitas::core
     }
 
     constexpr const char* kLogFilePath{ "nbody.log" };
+
+    [[nodiscard]] bool BeginLoggerWindow() {
+      ImGuiViewport* viewport{ ImGui::GetMainViewport() };
+      const float window_width{ viewport->Size.x * 0.35f };
+      const float window_height{ viewport->Size.y * 0.35f };
+
+      ImGui::SetNextWindowSize(ImVec2(window_width, window_height), ImGuiCond_FirstUseEver);
+
+      return ImGui::Begin("Logger", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoNavFocus);
+    }
+
+    void EndLoggerWindow() {
+      ImGui::SetWindowFontScale(1.0f);
+      ImGui::End();
+    }
   } // namespace
 
   Logger& Logger::GetInstance() {
@@ -63,8 +78,8 @@ namespace gravitas::core
   }
 
   void Logger::Draw() {
-    if (!BeginWindow()) {
-      EndWindow();
+    if (!BeginLoggerWindow()) {
+      EndLoggerWindow();
       return;
     }
 
@@ -111,7 +126,7 @@ namespace gravitas::core
     ImGui::Separator();
     ImGui::Checkbox("Auto-scroll", &m_autoScroll);
 
-    EndWindow();
+    EndLoggerWindow();
   }
 
   void Logger::Clear() {
@@ -121,21 +136,6 @@ namespace gravitas::core
 
   Logger::Logger() {
     OpenLogFile();
-  }
-
-  bool Logger::BeginWindow() {
-    ImGuiViewport* viewport{ ImGui::GetMainViewport() };
-    const float window_width{ viewport->Size.x * 0.35f };
-    const float window_height{ viewport->Size.y * 0.35f };
-
-    ImGui::SetNextWindowSize(ImVec2(window_width, window_height), ImGuiCond_FirstUseEver);
-
-    return ImGui::Begin("Log Console", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoNavFocus);
-  }
-
-  void Logger::EndWindow() {
-    ImGui::SetWindowFontScale(1.0f);
-    ImGui::End();
   }
 
   void Logger::OpenLogFile() {
