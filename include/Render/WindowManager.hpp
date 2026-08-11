@@ -7,11 +7,10 @@
 
 #include "Core/EventBus.hpp"
 #include "Core/Error.hpp"
-#include "Core/Reflectable.hpp"
 
 namespace gravitas::render
 {
-  class WindowManager : public core::Reflectable {
+  class WindowManager {
   public:
     WindowManager() noexcept;
     
@@ -21,9 +20,6 @@ namespace gravitas::render
     WindowManager& operator=(const WindowManager&) = delete;
     WindowManager(WindowManager&&) noexcept = delete;
     WindowManager& operator=(WindowManager&&) noexcept = delete;
-
-    [[nodiscard]] core::PropertyNode GetTree() const override;
-    void OnPropertyChange(const core::EvtPropertyChange& event) override;
 
     [[nodiscard]] std::expected<void, WindowError> Initialize();
     void BeginFrame();

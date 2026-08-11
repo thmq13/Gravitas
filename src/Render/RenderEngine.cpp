@@ -31,18 +31,6 @@ namespace gravitas::render
     GVT_INFO("RenderEngine::~RenderEngine freeing resources");
   }
 
-  core::PropertyNode RenderEngine::GetTree() const {
-    std::vector<core::PropertyNode> children{};
-
-    children.push_back(m_windowManager.GetTree());
-
-    return core::PropertyNode::CreateBranchNode(
-      "RenderEngine",
-      "Render Engine",
-      std::move(children)
-    );
-  }
-
   std::expected<void, render::RenderEngineError> RenderEngine::Initialize() {
     assert(!m_isInitialized && "RenderEngine::Initialize called on an already initialized render engine");
     if (m_isInitialized) {
@@ -71,9 +59,9 @@ namespace gravitas::render
     std::visit([this](const auto& evt) {
       using EventType = std::decay_t<decltype(evt)>;
 
-      if constexpr (std::same_as<EventType, core::EvtPropertyChange>) {
-        OnPropertyChange(evt);
-      }
+      // if constexpr (std::same_as<EventType, core::EvtPropertyChange>) {
+      //   //...
+      // }
     }, event);
   }
 
@@ -101,14 +89,5 @@ namespace gravitas::render
       return false;
     }
     return m_windowManager.ShouldClose();
-  }
-
-  void RenderEngine::OnPropertyChange(const core::EvtPropertyChange& event) {
-    GVT_ENSURE_INIT(m_isInitialized, "RenderEngine");
-
-    if (event.path.starts_with("RenderEngine/WindowManager/")) {
-      m_windowManager.OnPropertyChange(event);
-      return;
-    }
   }
 } // namespace gravitas::render

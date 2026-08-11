@@ -41,23 +41,6 @@ namespace gravitas::render
     GVT_INFO("WindowManager::~WindowManager freeing resources");
   }
 
-  core::PropertyNode WindowManager::GetTree() const {
-    std::vector<core::PropertyNode> children{};
-
-    children.push_back(core::PropertyNode::CreateLeafNode(
-      "RenderEngine/WindowManager/framesPerSecond",
-      "Target FPS",
-      core::AccessMode::ReadWrite,
-      core::RangeHint<std::uint32_t>{ .min = 30, .max = 1000 },
-      m_framesPerSecond
-    ));
-
-    return core::PropertyNode::CreateBranchNode(
-      "RenderEngine/WindowManager",
-      "Window Manager",
-      std::move(children)
-    );
-  }
 
   std::expected<void, WindowError> WindowManager::Initialize() {
     assert(!m_isInitialized && "WindowManager::Initialize called on an already initialized window manager");
@@ -150,19 +133,6 @@ namespace gravitas::render
       return false;
     }
     return ::WindowShouldClose();
-  }
-
-  void WindowManager::OnPropertyChange(const core::EvtPropertyChange& event) {
-    GVT_ENSURE_INIT(m_isInitialized, "WindowManager");
-
-    if (event.id == utils::HashPath("RenderEngine/WindowManager/framesPerSecond")) {
-      if (auto *fps{ std::get_if<std::uint32_t>(&event.newValue) }) {
-        m_framesPerSecond = *fps;
-        ::SetTargetFPS(static_cast<int>(m_framesPerSecond));
-        GVT_TRACE("WindowManager::OnPropertyChange changed Target FPS to {}", m_framesPerSecond);
-      }
-      return;
-    }
   }
 
   void WindowManager::UpdateCamera() {
