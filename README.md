@@ -16,14 +16,12 @@ __Build System__: CMake (3.20+)
 ```
 Gravitas/
 ├── include/           # Header files
-│   ├── Core/          # Application and core systems
-│   ├── Generator/     # Particle generators
-│   ├── Utils/         # Math and utilities
-│   ├── Particle/      # Particle data model
-│   ├── Physics/       # Physics logic
-│   ├── Render/        # Render pipeline
-│   └── UI/            # ImGui interface layouts
-├── shaders/           # GLSL shaders
+│   ├── Core/          # Core application logic
+│   ├── Particle/      # Particle model and buffer
+│   ├── Reflect/       # Reflection system
+│   ├── Render/        # Rendering pipeline
+│   ├── UI/            # Manage UI storage and draw
+│   ├── Utils/         # Utility types/functions
 └── src/               # Source files (.cpp)
 ```
 
