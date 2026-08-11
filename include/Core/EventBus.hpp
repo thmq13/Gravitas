@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstdint>
+#include <cstddef>
 #include <concepts>
 #include <functional>
 #include <variant>
@@ -10,25 +11,32 @@
 #include <typeinfo>
 #include <mutex>
 #include <utility>
-#include <string_view>
+#include <string>
+#include <memory>
 
 #include "Core/AppState.hpp"
 #include "Core/Logging.hpp"
-#include "Core/Reflectable.hpp"
+
+namespace gravitas::reflect { class Reflectable; }
 
 namespace gravitas::core
 {
+  // Request shutdown for the whole application
   struct EvtRequestShutdown {
   };
 
+  // Request application state change
   struct EvtRequestStateChange {
     AppState requestedState;
   };
 
+  // Generic payload the UI sends to mutate engine memory
   struct EvtPropertyChange {
-    std::uint32_t id{};
-    std::string_view path{};
-    NodePayload newValue{};
+    std::weak_ptr<reflect::Reflectable> target;
+    std::size_t propertyOffset;
+    std::uint32_t propertyNameId;
+    std::type_index typeId;
+    std::vector<std::uint8_t> newData;
   };
 
   using Event = std::variant<EvtRequestShutdown, EvtRequestStateChange, EvtPropertyChange>;
