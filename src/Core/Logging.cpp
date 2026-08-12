@@ -72,7 +72,7 @@ namespace gravitas::core
 
     m_messages.push_back(LogMessage{level, std::move(message)});
 
-    if (m_messages.size() > s_maxMessageCount) {
+    if (m_messages.size() > kMaxMessageCount) {
       m_messages.pop_front();
     }
   }
