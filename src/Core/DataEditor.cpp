@@ -17,13 +17,17 @@ namespace gravitas::core
 
       if constexpr (std::same_as<EventType, EvtPropertyChange>) {
         if (auto target{ evt.target.lock() }) {
-          target->ApplyPropertyChange(
+          const bool success{target->ApplyPropertyChange(
             evt.propertyOffset,
             evt.propertyNameId,
             evt.typeId,
-            evt.newData.data(),
-            evt.newData.size()
-          );
+            evt.GetData(),
+            evt.dataSize
+          )};
+          if (!success) {
+            GVT_ERROR("DataEditor::HandleEvent failed to apply property change");
+            GVT_ASSERT(false, "DataEditor::HandleEvent failed to apply property change");
+          }
         } else {
           GVT_DEBUG("DataEditor::HandleEvent tried to apply change to a deleted target object");
         }
