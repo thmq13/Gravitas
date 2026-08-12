@@ -10,22 +10,20 @@ namespace gravitas::reflect
     return values.contains(key);
   }
 
-  std::string_view PropertyMetadata::Get(ReflectType key) const noexcept{
+  std::optional<std::string_view> PropertyMetadata::Get(ReflectType key) const noexcept{
     auto it{ values.find(key) };
     if (it == values.end()) {
-      GVT_ERROR("PropertyMetadata::Get called with a key not available in this object metadata");
-      return "Key not found";
+      return std::nullopt;
     }
     return it->second;
   }
 
   const PropertyNode* Reflection::GetProperty(std::size_t propertyOffset) const noexcept {
     for (const auto& property : properties) {
-      if (property.memoryOffset == propertyOffset) {
+      if (property.offset == propertyOffset) {
         return &property;
       }
     }
-    GVT_ERROR("Reflection::GetProperty called with an offset not available in {}", name);
     return nullptr;
   }
 } // namespace gravitas::reflect
