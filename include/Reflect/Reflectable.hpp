@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <string_view>
 #include <mutex>
 #include <typeindex>
 
@@ -17,7 +16,7 @@ namespace gravitas::reflect
     [[nodiscard]] virtual const Reflection& GetReflection() const noexcept = 0;
     virtual void PostEditChange(std::uint32_t /*propertyNameId*/) {}
 
-    void ApplyPropertyChange(
+    [[nodiscard]] bool ApplyPropertyChange(
       std::size_t propertyOffset, 
       std::uint32_t propertyNameId,
       std::type_index incomingTypeId,

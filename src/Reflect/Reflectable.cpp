@@ -7,7 +7,7 @@
 
 namespace gravitas::reflect
 {
-  void Reflectable::ApplyPropertyChange(
+  bool Reflectable::ApplyPropertyChange(
     std::size_t propertyOffset, 
     std::uint32_t propertyNameId,
     std::type_index incomingTypeId,
@@ -18,32 +18,38 @@ namespace gravitas::reflect
     std::lock_guard<std::mutex> lock(m_mutex);
     const Reflection& reflection{ GetReflection() };
 
+    // Bound check
     if (propertyOffset + dataSize > reflection.sizeInBytes) {
       GVT_ERROR("Reflectable::ApplyPropertyChange memory mutation out of bound for class {}", reflection.name);
-      assert(false && "Reflectable::ApplyPropertyChange memory mutation out of bound");
-      return;
+      return false;
     }
 
+    // Offset check
     const PropertyNode* property_node{ reflection.GetProperty(propertyOffset) };
     if (!property_node) {
       GVT_ERROR("Reflectable::ApplyPropertyChange property offset {} not found for class {}",
         propertyOffset, reflection.name);
-      assert(false && "Reflectable::ApplyPropertyChange property offset not found");
-      return;
+      return false;
     }
 
+    // Typeid check
     if (property_node->typeId != incomingTypeId) {
       GVT_ERROR("Reflectable::ApplyPropertyChange incoming type id mismatch for property {} in class {}",
         property_node->name, reflection.name);
-      assert(false && "Reflectable::ApplyPropertyChange type id mismatch");
-      return;
+      return false;
     }
 
+    //  Copy assign
     void* dest_memory{ reinterpret_cast<char*>(this) + propertyOffset };
-    property_node->CopyAssign(dest_memory, newData, dataSize);
+    if(!property_node->CopyAssign(dest_memory, newData, dataSize)) {
+      GVT_ERROR("Reflectable::ApplyPropertyChange unable to copy assign property {} in class {}",
+        property_node->name, reflection.name);
+      return false;
+    }
 
     ++m_version;
     PostEditChange(propertyNameId);
+    return true;
   }
 
   [[nodiscard]] std::uint32_t Reflectable::GetVersion() const {
