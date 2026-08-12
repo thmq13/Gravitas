@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 #include <cstddef>
 #include <string>
@@ -22,6 +23,7 @@
 #define GVT_WARN(...)  GVT_LOG_IMPL(Warn,  __VA_ARGS__)
 #define GVT_ERROR(...) GVT_LOG_IMPL(Error, __VA_ARGS__)
 #define GVT_FATAL(...) do { GVT_LOG_IMPL(Fatal, __VA_ARGS__); std::abort(); } while(0)
+#define GVT_ASSERT(condition, ...) do { assert(condition && __VA_ARGS__); } while(0)
 
 namespace gravitas::core
 {
@@ -41,7 +43,7 @@ namespace gravitas::core
 
   class Logger {
   public:
-    static constexpr std::size_t s_maxMessageCount{ 1000 };
+    static constexpr std::size_t kMaxMessageCount{ 1000 };
 
     [[nodiscard]] static Logger& GetInstance();
 
