@@ -4,6 +4,20 @@
 
 namespace gravitas::core
 {
+  const void* EvtPropertyChange::GetData() const noexcept {
+    if (dataSize <= kMaxInlineSize) {
+      return static_cast<const void*>(inlineData.data());
+    } else {
+      if (heapData.size() < dataSize) {
+        GVT_ASSERT(false, "EvtPropertyChange::GetData: heapData size is smaller than declared dataSize");
+        GVT_ERROR("EvtPropertyChange::GetData: heapData size {} is smaller than declared dataSize {}",
+          heapData.size(), dataSize);
+        return nullptr;
+      }
+      return static_cast<const void*>(heapData.data());
+    }
+  }
+
   void EventBus::Publish(Event event) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_queue.push(std::move(event));

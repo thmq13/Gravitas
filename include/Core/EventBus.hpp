@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <cstddef>
@@ -13,6 +14,7 @@
 #include <utility>
 #include <string>
 #include <memory>
+#include <optional>
 
 #include "Core/AppState.hpp"
 #include "Core/Logging.hpp"
@@ -32,11 +34,18 @@ namespace gravitas::core
 
   // Generic payload the UI sends to mutate engine memory
   struct EvtPropertyChange {
+    static constexpr std::size_t kMaxInlineSize{ 32 };
+ 
     std::weak_ptr<reflect::Reflectable> target;
-    std::size_t propertyOffset;
-    std::uint32_t propertyNameId;
-    std::type_index typeId;
-    std::vector<std::uint8_t> newData;
+    std::size_t propertyOffset{};
+    std::uint32_t propertyNameId{};
+    std::type_index typeId{ typeid(void) };
+    
+    std::array<std::uint8_t, kMaxInlineSize> inlineData{};
+    std::vector<std::uint8_t> heapData{};
+    std::size_t dataSize{};
+
+    [[nodiscard]] const void* GetData() const noexcept;
   };
 
   using Event = std::variant<EvtRequestShutdown, EvtRequestStateChange, EvtPropertyChange>;
@@ -56,9 +65,9 @@ namespace gravitas::core
 
     template <typename EventType>
     void Subscribe(EventCallback callback) {
-      assert(callback && "EventBus::Subscribe received an empty/null callback");
       if (!callback) {
         GVT_ERROR("EventBus::Subscribe received an empty/null callback");
+        GVT_ASSERT(false, "EventBus::Subscribe received an empty/null callback");
         return;
       }
       std::lock_guard<std::mutex> lock(m_mutex);
